@@ -9,6 +9,7 @@ from time import sleep
 import textwrap
 from fake_useragent import UserAgent
 ua = UserAgent()
+__author__ = 'Mayur Kulkarni <mayurkulkarni012@gmail.com>'
 
 
 class Word:
@@ -59,7 +60,7 @@ class Word:
             return None
 
     def __str__(self):
-        mnemonic_string = '\nMnemonic:\n' + self.mnemonic.encode('utf-8') if self.mnemonic is not None else ''
+        mnemonic_string = 'Mnemonic:\n' + self.mnemonic.encode('utf-8') if self.mnemonic is not None else ''
         return self.name + '\n\n' + self.information + mnemonic_string
 
 
@@ -103,5 +104,5 @@ def process(output_file_name, input_file_name):
 
 
 if __name__ == '__main__':
-    # process('manhattan_essential_with_mnemonic.txt', 'Manhattan500Essential.pdf')
+    process('manhattan_essential_with_mnemonic.txt', 'Manhattan500Essential.pdf')
     process('manhattan_advanced_with_mnemonic.txt', 'Manhattan500Advanced.pdf')
