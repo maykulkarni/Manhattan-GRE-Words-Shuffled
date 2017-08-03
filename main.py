@@ -32,6 +32,11 @@ class Word:
 
     @staticmethod
     def get_mnemonic(word):
+        """
+        Make GET request to mnemonic dictionary and fetch mnemonic
+        :param word:    word to request
+        :return:        maximum 5 mnemonics
+        """
         session = requests.session()
         header = {
             'User Agent': ua.random
@@ -65,7 +70,12 @@ class Word:
 
 
 def get_pdf_content(file_name):
-    # stolen from : https://stackoverflow.com/a/21564675
+    """
+    Read PDF and get the contents in string
+    stolen from : https://stackoverflow.com/a/21564675
+    :param file_name:   PDF file name
+    :return:            string contents
+    """
     fp = file(file_name, 'rb')
     resource_manager = PDFResourceManager()
     return_string = StringIO()
@@ -87,11 +97,16 @@ def get_pdf_content(file_name):
 
 
 def process(output_file_name, input_file_name):
+    """
+    Write to text file
+    :param output_file_name:    output text file
+    :param input_file_name:     input text file
+    """
     words = []
     file_content = get_pdf_content(input_file_name)[:-1]
     for i in range(0, len(file_content), 2):
         words.append(Word(file_content[i], file_content[i + 1]))
-        sleep(1)
+        sleep(1)    # sleep for 1 sec to avoid throttling
 
     shuffle(words)
 
