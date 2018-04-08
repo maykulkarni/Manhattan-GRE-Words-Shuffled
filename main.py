@@ -121,8 +121,6 @@ def process(output_file_name, input_file_name):
                      'information': word_result.information,
                      'mnemonic': word_result.mnemonic.encode('utf-8') if word_result.mnemonic is not None else ''}
         words_json_list.append(word_json)
-        if i > 30:
-            break
         sleep(1)  # sleep for 1 sec to avoid throttling
 
     shuffle(words)
