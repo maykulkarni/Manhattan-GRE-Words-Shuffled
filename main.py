@@ -5,9 +5,11 @@ from pdfminer.pdfpage import PDFPage
 from cStringIO import StringIO
 from random import shuffle
 import requests
+import json
 from time import sleep
 import textwrap
 from fake_useragent import UserAgent
+
 ua = UserAgent()
 __author__ = 'Mayur Kulkarni <mayurkulkarni012@gmail.com>'
 
@@ -18,6 +20,11 @@ class Word:
     def __init__(self, name, information):
         self.name = [x for x in name.split('\n') if x is not '']
         self.stripped_name = self.name[0]
+        self.original_name = self.name[0]
+        self.type = self.name[1]
+        for char_to_remove in ['(', ')']:
+            self.type = self.type.replace(char_to_remove, '')
+        self.pronunciation = self.name[2]
         print 'Storing: ' + self.stripped_name
         self.name[0] = ' ' * (50 - len(self.name[0]) / 2) + self.name[0]
         self.name[1] = ' ' * (50 - len(self.name[1]) / 2) + self.name[1]
@@ -103,21 +110,34 @@ def process(output_file_name, input_file_name):
     :param input_file_name:     input text file
     """
     words = []
+    words_json_list = []
     file_content = get_pdf_content(input_file_name)[:-1]
     for i in range(0, len(file_content), 2):
-        words.append(Word(file_content[i], file_content[i + 1]))
-        sleep(1)    # sleep for 1 sec to avoid throttling
+        word_result = Word(file_content[i], file_content[i + 1])
+        words.append(word_result)
+        word_json = {'name': word_result.original_name,
+                     'type': word_result.type,
+                     'pronunciation': word_result.pronunciation,
+                     'information': word_result.information,
+                     'mnemonic': word_result.mnemonic.encode('utf-8') if word_result.mnemonic is not None else ''}
+        words_json_list.append(word_json)
+        sleep(1)  # sleep for 1 sec to avoid throttling
 
     shuffle(words)
+    shuffle(words_json_list)
+    words_json_array = json.dumps(words_json_list, ensure_ascii=False)
 
-    with open(output_file_name, 'w') as f:
+    with open(output_file_name + ".txt", 'w') as f:
         for word in words:
             f.write('*' * 100)
             f.write('\n')
             f.write(str(word))
             f.write('\n')
 
+    with open(output_file_name + ".json", 'w') as f:
+        f.write(str(words_json_array))
+
 
 if __name__ == '__main__':
-    process('manhattan_essential_with_mnemonic.txt', 'Manhattan500Essential.pdf')
-    process('manhattan_advanced_with_mnemonic.txt', 'Manhattan500Advanced.pdf')
+    process('manhattan_essential_with_mnemonic', 'Manhattan500Essential.pdf')
+    process('manhattan_advanced_with_mnemonic', 'Manhattan500Advanced.pdf')
