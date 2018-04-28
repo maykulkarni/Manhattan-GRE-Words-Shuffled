@@ -6,6 +6,7 @@ So, I decided to write a Python script to read the PDF, shuffle it and store it 
 
 + Added mnemonics from http://www.mnemonicdictionary.com/
 + Word list also available in JSON Format
++ Word List available on Android App - [Word List](https://github.com/adityakamble49/word-list) 
 
 
 
